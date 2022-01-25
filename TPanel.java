@@ -15,6 +15,15 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
     private int waitTime;
 
 
+    public TPanel() {
+        super(); //creates the panel
+        setSize(1000, 760); //sets panel size
+        this.buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        addMouseListener(this);
+        Thread t = new Thread(this);
+        t.start();
+    }
+
     public TPanel(int waitTime) {
         super(); //creates the panel
         setSize(1000, 760); //sets panel size
@@ -29,10 +38,48 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
     public void paint(Graphics g)
     {
         Graphics gc = buffer.getGraphics();
+        gc.setColor(Color.BLACK);
+        gc.fillRect(0,0,getWidth(),getHeight());
+        gc.setColor(Color.ORANGE);
+
+      //  gc.drawLine(50,100,150,100);
+       // gc.drawLine(10,190,100,190);
+       // gc.drawLine(50,100,10,190);
+       // gc.drawLine(150,100,100,190);
+        int xPos = 450, yPos = 100;
+        int xPosV = 475, yPosV = 100;
+        for(int a = 0; a < 4; a++)
+        {
+            gc.setColor(Color.ORANGE);
+            gc.fillRect(450,100+a*170,100,100);
+            for(int b = 0; b  < 4; b++)
+            {
+                gc.setColor(Color.BLACK);
+                gc.drawLine(xPos,yPos,xPos+100,yPos+25*b);
+                gc.drawLine(xPosV+25*b,yPosV,xPosV+25*b,yPosV+100);
+            }
+            yPos+= 170;
+            yPosV += 170;
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         g.drawImage(buffer, 0, 0, null);
-
-
-
     }
 
     public void update()
