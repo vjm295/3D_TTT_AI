@@ -1,38 +1,34 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-
-
+import java.util.Scanner;
 
 public class TPanel extends JPanel implements MouseListener, Runnable {
 
     private BufferedImage buffer;
-    private Thread t;
     private int updateCount;
     private int waitTime;
+    private Player pX;
+    private Player pO;
 
 
     public TPanel() {
         super(); //creates the panel
+        System.out.println("---3D Tic Tac Toe Menu---"); //moved this section from Main into Panel bcs it actually works this way
+        Scanner keyboard = new Scanner(System.in);
+        System.out.print("Enter your name for player X: ");
+        String pXName = keyboard.nextLine();
+        pX = new Player('X', pXName);
+        System.out.println("The recorded name for X is " + pX.getName());
+        System.out.print("Enter your name for player O: ");
+        String pOName = keyboard.nextLine();
+        pO = new Player('O', pOName);
+        System.out.println("The recorded name for O is " + pO.getName()); //
         setSize(1000, 760); //sets panel size
         this.buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         addMouseListener(this);
-        Thread t = new Thread(this);
-        t.start();
-    }
-
-    public TPanel(int waitTime) {
-        super(); //creates the panel
-        setSize(1000, 760); //sets panel size
-        this.waitTime = waitTime;
-
-        this.buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-        addMouseListener(this);
-        Thread t = new Thread(this);
-        t.start();
     }
 
     public void paint(Graphics g)
@@ -109,7 +105,7 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
             if(shouldRepaint)
                 repaint();
             try {
-                t.sleep(waitTime);
+                Thread.sleep(waitTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
