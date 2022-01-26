@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TFrame extends JFrame {
+    private TPanel p;
     public TFrame(String title) {
         super(title); //creates frame with title
 
@@ -11,7 +12,7 @@ public class TFrame extends JFrame {
 
         pack(); //creates frame (hidden at this point)
 
-        TPanel p = new TPanel(); //creates panel
+        p = new TPanel(); //creates panel
 
         Insets insets = getInsets(); //gets insets
 
@@ -28,7 +29,9 @@ public class TFrame extends JFrame {
         pack(); //adjusts to be the size we set with set preferred size
 
         setVisible(true);
-
-
+    }
+    public TPanel getP()
+    {
+        return p;
     }
 }
