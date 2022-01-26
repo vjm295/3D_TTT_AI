@@ -9,7 +9,7 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
 
     private BufferedImage buffer;
     private int updateCount;
-    private int waitTime;
+    private int waitTime = 0; // this is only for now because no AI
     private Player pX;
     private Player pO;
 
@@ -21,11 +21,21 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
         System.out.print("Enter your name for player X: ");
         String pXName = keyboard.nextLine();
         pX = new Player('X', pXName);
-        System.out.println("The recorded name for X is " + pX.getName());
+        System.out.println("The recorded name for X is " + pX.getName()); // just confirms that name for X actually registered
         System.out.print("Enter your name for player O: ");
         String pOName = keyboard.nextLine();
         pO = new Player('O', pOName);
-        System.out.println("The recorded name for O is " + pO.getName()); //
+        System.out.println("The recorded name for O is " + pO.getName()); // just confirms that name for O actually registered
+        /*System.out.print("Will player X be AI or Human? "); // This is your section in main, moved it here too bt commented it out because no AI right now
+        String pXType = keyboard.nextLine();
+        System.out.print("Will player O be AI or Human? ");
+        String pOType = keyboard.nextLine();
+        if(pOType.equals("AI") && pXType.equals("AI"))
+        {
+            System.out.print("How many milliseconds do you want the AI to wait between moves? ");
+            int waitTime = keyboard.nextInt();
+                    
+        } */
         setSize(1000, 760); //sets panel size
         this.buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         addMouseListener(this);
