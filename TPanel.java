@@ -47,27 +47,64 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
         gc.setColor(Color.BLACK);
         gc.fillRect(0,0,getWidth(),getHeight());
         gc.setColor(Color.ORANGE);
-
-      //  gc.drawLine(50,100,150,100);
-       // gc.drawLine(10,190,100,190);
-       // gc.drawLine(50,100,10,190);
-       // gc.drawLine(150,100,100,190);
-        int xPos = 450, yPos = 100;
-        int xPosV = 475, yPosV = 100;
+        Font f = new Font(Font.SERIF,Font.BOLD,30);
+        gc.setFont(f);
+        int xPosV = 450, yPosV = 50;
+        int xPos = 450, yPos = 50; //recalculate values
         for(int a = 0; a < 4; a++)
         {
             gc.setColor(Color.ORANGE);
-            gc.fillRect(450,100+a*170,100,100);
+            gc.fillRect(450,50+a*230,150,150);
             for(int b = 0; b  < 4; b++)
             {
                 gc.setColor(Color.BLACK);
-                gc.drawLine(xPos,yPos,xPos+100,yPos+25*b);
-                gc.drawLine(xPosV+25*b,yPosV,xPosV+25*b,yPosV+100);
+                gc.drawLine(xPos,yPos+37*b,xPos+150,yPos+37*b);
+                gc.drawLine(xPosV+37*b,yPosV,xPosV+37*b,yPosV+150);
             }
-            yPos+= 170;
-            yPosV += 170;
-
+            yPos+= 230;
+            yPosV += 230;
         }
+        gc.setColor(Color.BLUE);
+       // gc.fillOval(456,55,25,25);
+       // gc.drawString("X",459,80);
+       // gc.drawString("O",495,310);
+       // gc.drawString("X",531,80);//36 x  and y increment
+
+        for(int s = 0; s < board.length; s++)
+        {
+            for(int r = 0; r < board[0].length; r++)
+            {
+                for(int c = 0; c < board[0][0].length; c++)
+                {
+                    if(board[s][r][c] == 'X' || board[s][r][c] == 'x')
+                    {
+                        gc.setColor(Color.BLUE);
+                        gc.drawString("X",459+36*c,80+36*r + 230*s);
+                    }
+                    else if(board[s][r][c] == 'O' || board[s][r][c] == 'o')
+                    {
+                        gc.setColor(Color.RED);
+                        gc.drawString("O",459+36*c,80+36*r + 230*s);
+                    }
+                }
+            }
+        }
+        if(status == X_TURN)
+        {
+            f = new Font(Font.SERIF,Font.BOLD,60);
+            gc.setFont(f);
+            gc.setColor(new Color(0,204,255));
+            gc.drawString( pX.getName()+"'s Turn (X)",50,90);
+        }
+        else if(status == O_TURN)
+        {
+            f = new Font(Font.SERIF,Font.BOLD,60);
+            gc.setFont(f);
+            gc.setColor(Color.RED);
+            gc.drawString( pO.getName()+"'s Turn (O)",50,90);
+        }
+
+
 
 
 
@@ -88,11 +125,22 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
         g.drawImage(buffer, 0, 0, null);
     }
 
-    public void update()
+    public void changeStatus()
     {
-
+        if(status == X_TURN)
+            status = O_TURN;
+        else
+            status = X_TURN;
     }
 
+
+
+    public boolean won()
+    {
+
+
+        return false;
+    }
 
 
 
@@ -108,7 +156,7 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
             long updatesNeeded = (((currentTime-startTime)/1000000))/waitToUpdate;
             for(long x = updateCount; x<updatesNeeded; x++)
             {
-                update();
+               // update();
                 shouldRepaint = true;
                 updateCount++;
             }
@@ -121,7 +169,7 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
             }
 
 
-             update();
+            // update();
         }
         /* Call update and paint the correct # of times per second */
 
@@ -134,8 +182,34 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        double x = e.getX(), y = e.getY();
+        int x = e.getX(), y = e.getY();
+        int s = (y-75)/205;
+        int r = (y-49)/38;
+        if(s > 0)
+            r = (y-49-230*s)/38;
+        int c = (x-450)/37;
+        System.out.println();
+        System.out.println("sheet: "+s +"row: "+r +"col: "+c);
+        Color c1 = new Color(buffer.getRGB(x,y));
+        if(c1.equals(Color.ORANGE))
+        {
+            if(status == 0 || status == 1) {
+                if (status == X_TURN && board[s][r][c] != 'O' && board[s][r][c] != 'X')
+                {
+                    board[s][r][c] = 'X';
+                    changeStatus();
+                }
+                else if (status == O_TURN && board[s][r][c] != 'X' && board[s][r][c] != 'O')
+                {
+                    board[s][r][c] = 'O';
+                    changeStatus();
+                }
 
+            }
+
+        }
+
+    repaint();
     }
 
     @Override
