@@ -125,13 +125,6 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
         g.drawImage(buffer, 0, 0, null);
     }
     
-     public void changeStatus()
-    {
-        if(status == X_TURN)
-            status = O_TURN;
-        else
-            status = X_TURN;
-    }
 
 
     public void changeStatus()
