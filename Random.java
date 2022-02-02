@@ -1,10 +1,10 @@
-public class AIPlayer implements PlayerInt
+public class Random implements PlayerInt
 {
     private char letter;
     private Location move;
     private String name;
 
-    public AIPlayer(char letter, String name)
+    public Random(char letter, String name)
     {
         this.letter = letter;
         this.name = name;
