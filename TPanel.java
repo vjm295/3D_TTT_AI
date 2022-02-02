@@ -9,9 +9,8 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
 
     private BufferedImage buffer;
     private int updateCount;
-    private int waitTime;
+    private int waitTime=0;
     private char[][][] board = new char[4][4][4];
-    //private TGame game;
     private Player pX;
     private Player pO;
     public static final int X_TURN = 0;
@@ -25,26 +24,42 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
         super();
         System.out.println("---3D Tic Tac Toe Menu---");
         Scanner keyboard = new Scanner(System.in);
-        System.out.print("Enter your name for player X: ");
-        String pXName = keyboard.nextLine();
-        pX = new Player('X', pXName);
-        System.out.println("The recorded name for X is " + pX.getName());
-        System.out.print("Enter your name for player O: ");
-        String pOName = keyboard.nextLine();
-        pO = new Player('O', pOName);
-        System.out.println("The recorded name for O is " + pO.getName());
-        /*System.out.print("Will player X be AI or Human? "); // no AI right now
+        System.out.print("Will player X be an AI or a human? "); // no AI right now
         String pXType = keyboard.nextLine();
+        if(pXType.equals("human") || pXType.equals("Human"))
+        {
+            System.out.print("Enter your name for player X: ");
+            String pXName = keyboard.nextLine();
+            pX = new Player('x', pXName);
+        }
+        else if(pXType.equals("AI"))
+        {
+            System.out.println("Select an AI: ");
+            System.out.print("1. Random\n2. Straight Line\n3. Blocking\n4. Straight Line Blocking\n Enter: ");
+            int xAIType = keyboard.nextInt();
+        }
+        // put it into AI class and stuff
         System.out.print("Will player O be AI or Human? ");
         String pOType = keyboard.nextLine();
+        if(pOType.equals("human") || pOType.equals("Human"))
+        {
+            System.out.print("Enter your name for player O: ");
+            String pOName = keyboard.nextLine();
+            pO = new Player('o', pOName);
+        }
+        else if(pOType.equals("AI"))
+        {
+            System.out.println("Select an AI: ");
+            System.out.print("1. Random\n2. Straight Line\n3. Blocking\n4. Straight Line Blocking\n Enter: ");
+            int oAIType = keyboard.nextInt();
+        }
+        // put it into AI class and stuff
         if(pOType.equals("AI") && pXType.equals("AI"))
         {
             System.out.print("How many milliseconds do you want the AI to wait between moves? ");
             int waitTime = keyboard.nextInt();
-
-        } */
+        }
         setSize(1000, 950);
-        waitTime = 0; // only for rn
         this.buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         addMouseListener(this);
     }
