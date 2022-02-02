@@ -9,24 +9,31 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
 
     private BufferedImage buffer;
     private int updateCount;
-    private int waitTime = 0; // this is only for now because no AI
+    private int waitTime;
+    private char[][][] board = new char[4][4][4];
+    //private TGame game;
     private Player pX;
     private Player pO;
-
+    public static final int X_TURN = 0;
+    public static final int O_TURN = 1;
+    public static final int O_WON = 2;
+    public static final int X_WON = 3;
+    public static final int TIE = 4;
+    private int status = 0;
 
     public TPanel() {
-        super(); //creates the panel
-        System.out.println("---3D Tic Tac Toe Menu---"); //moved this section from Main into Panel bcs it actually works this way
+        super();
+        System.out.println("---3D Tic Tac Toe Menu---");
         Scanner keyboard = new Scanner(System.in);
         System.out.print("Enter your name for player X: ");
         String pXName = keyboard.nextLine();
         pX = new Player('X', pXName);
-        System.out.println("The recorded name for X is " + pX.getName()); // just confirms that name for X actually registered
+        System.out.println("The recorded name for X is " + pX.getName());
         System.out.print("Enter your name for player O: ");
         String pOName = keyboard.nextLine();
         pO = new Player('O', pOName);
-        System.out.println("The recorded name for O is " + pO.getName()); // just confirms that name for O actually registered
-        /*System.out.print("Will player X be AI or Human? "); // This is your section in main, moved it here too bt commented it out because no AI right now
+        System.out.println("The recorded name for O is " + pO.getName());
+        /*System.out.print("Will player X be AI or Human? "); // no AI right now
         String pXType = keyboard.nextLine();
         System.out.print("Will player O be AI or Human? ");
         String pOType = keyboard.nextLine();
@@ -34,9 +41,10 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
         {
             System.out.print("How many milliseconds do you want the AI to wait between moves? ");
             int waitTime = keyboard.nextInt();
-                    
+
         } */
-        setSize(1000, 760); //sets panel size
+        setSize(1000, 950);
+        waitTime = 0; // only for rn
         this.buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         addMouseListener(this);
     }
@@ -49,6 +57,13 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
         gc.setColor(Color.ORANGE);
         Font f = new Font(Font.SERIF,Font.BOLD,30);
         gc.setFont(f);
+        gc.setColor(Color.WHITE);
+        if(status == X_WON)
+            gc.drawString(pX.getName() + " has won the game!", 40, 40);
+        else if(status == O_WON)
+            gc.drawString(pO.getName() + " has won the game!", 40, 40);
+        else if(status == TIE)
+            gc.drawString("The game ended in a tie", 40, 40);
         int xPosV = 450, yPosV = 50;
         int xPos = 450, yPos = 50; //recalculate values
         for(int a = 0; a < 4; a++)
@@ -65,10 +80,10 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
             yPosV += 230;
         }
         gc.setColor(Color.BLUE);
-       // gc.fillOval(456,55,25,25);
-       // gc.drawString("X",459,80);
-       // gc.drawString("O",495,310);
-       // gc.drawString("X",531,80);//36 x  and y increment
+        // gc.fillOval(456,55,25,25);
+        // gc.drawString("X",459,80);
+        // gc.drawString("O",495,310);
+        // gc.drawString("X",531,80);//36 x  and y increment
 
         for(int s = 0; s < board.length; s++)
         {
@@ -103,48 +118,132 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
             gc.setColor(Color.RED);
             gc.drawString( pO.getName()+"'s Turn (O)",50,90);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         g.drawImage(buffer, 0, 0, null);
     }
-    
 
+    public int won(char[][][] board, Player pX, Player pO)
+    {
+        for(int i=0; i < 4; i++) // for X
+        {
+            for(int j=0; j < 4; j++)
+            {
+                for(int k=0; k < 4; k++)
+                {
+                    int hc=0, vc=0, tbdc=0, btdc=0, sc=0, svc=0, svc2=0, shc=0, shc2=0, tbdsc=0, tbdsc2=0, btdsc=0, btdsc2=0;
+
+                    for(int x = 0, y = 3; x < 4 && y >= 0; x++, y--)
+                    {
+                        if(board[i][j][x] == 'x') // row check
+                            hc++;
+                        if(board[i][x][k] == 'x') // col check
+                            vc++;
+                        if(board[i][x][x] == 'x') // top to bottom diagonal check
+                            tbdc++;
+                        if(board[i][x][y] == 'x') // bottom to top diagonal check
+                            btdc++;
+                        if(board[x][j][k] == 'x') // sheet check
+                            sc++;
+                        if(board[x][x][k] == 'x') // sheet col check
+                            svc++;
+                        if(board[x][y][k] == 'x') // sheet col check from last sheet (new)
+                            svc2++;
+                        if(board[x][j][x] == 'x') // sheet row check
+                            shc++;
+                        if(board[x][j][y] == 'x') // sheet row check from last sheet (new)
+                            shc2++;
+                        if(board[x][x][x] == 'x') // top to bottom diagonal sheet check (left to right)
+                            tbdsc++;
+                        if(board[x][y][x] == 'x') // bottom to top diagonal sheet check (left to right) (new)
+                            btdsc++;
+                        if(board[x][x][y] == 'x') // top to bottom diagonal sheet check (right to left)
+                            tbdsc2++;
+                        if(board[x][y][y] == 'x') // bottom to top diagonal sheet check (right to left) (new)
+                            btdsc2++;
+                    }
+
+                    if(hc==4 || vc==4 || tbdc==4 || btdc==4 || sc==4 || svc==4 || shc==4 || svc2==4 || tbdsc==4 || btdsc==4 || shc2==4 || tbdsc2==4 || btdsc2==4)
+                        return 1;
+                }
+            }
+        }
+        for(int i=0; i < 4; i++) // for O
+        {
+            for(int j=0; j < 4; j++)
+            {
+                for(int k=0; k < 4; k++)
+                {
+                    int hc=0, vc=0, tbdc=0, btdc=0, sc=0, svc=0, svc2=0, shc=0, shc2=0, tbdsc=0, tbdsc2=0, btdsc=0, btdsc2=0;
+
+                    for(int x = 0, y = 3; x < 4 && y >= 0; x++, y--)
+                    {
+                        if(board[i][j][x] == 'o') // row check
+                            hc++;
+                        if(board[i][x][k] == 'o') // col check
+                            vc++;
+                        if(board[i][x][x] == 'o') // top to bottom diagonal check
+                            tbdc++;
+                        if(board[i][x][y] == 'o') // bottom to top diagonal check
+                            btdc++;
+                        if(board[x][j][k] == 'o') // sheet check
+                            sc++;
+                        if(board[x][x][k] == 'o') // sheet col check
+                            svc++;
+                        if(board[x][y][k] == 'o') // sheet col check from last sheet
+                            svc2++;
+                        if(board[x][j][x] == 'o') // sheet row check
+                            shc++;
+                        if(board[x][j][y] == 'o') // sheet row check from last sheet
+                            shc2++;
+                        if(board[x][x][x] == 'o') // top to bottom diagonal sheet check (left to right)
+                            tbdsc++;
+                        if(board[x][y][x] == 'o') // bottom to top diagonal sheet check (left to right)
+                            btdsc++;
+                        if(board[x][x][y] == 'o') // top to bottom diagonal sheet check (right to left)
+                            tbdsc2++;
+                        if(board[x][y][y] == 'o') // bottom to top diagonal sheet check (right to left)
+                            btdsc2++;
+                    }
+
+                    if(hc==4 || vc==4 || tbdc==4 || btdc==4 || sc==4 || svc==4 || shc==4 || svc2==4 || tbdsc==4 || btdsc==4 || shc2==4 || tbdsc2==4 || btdsc2==4)
+                        return 2;
+                }
+            }
+        }
+        int tieCounter=0;
+        for(int i=0; i < 4; i++) // for tie
+        {
+            for(int j=0; j < 4; j++)
+            {
+                for(int k=0; k < 4; k++)
+                {
+                    if(board[i][j][k] == 'x' || board[i][j][k] == 'o' )
+                        tieCounter++;
+                }
+            }
+        }
+        if(tieCounter == 64)
+            return -1;
+        return 0;
+    }
+
+    public void update()
+    {
+
+    }
 
     public void changeStatus()
     {
         if(status == X_TURN)
             status = O_TURN;
-        else
+        else if(status == O_TURN)
             status = X_TURN;
+        if(won(board, pX, pO) == 1)
+            status = X_WON;
+        else if(won(board, pX, pO) == 2)
+            status = O_WON;
+        else if(won(board, pX, pO) == -1)
+            status = TIE;
     }
-
-
-
-    public boolean won()
-    {
-
-
-        return false;
-    }
-
-
 
     @Override
     public void run() {
@@ -158,7 +257,7 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
             long updatesNeeded = (((currentTime-startTime)/1000000))/waitToUpdate;
             for(long x = updateCount; x<updatesNeeded; x++)
             {
-               // update();
+                update();
                 shouldRepaint = true;
                 updateCount++;
             }
@@ -171,7 +270,7 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
             }
 
 
-            // update();
+             update();
         }
         /* Call update and paint the correct # of times per second */
 
@@ -191,27 +290,23 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
             r = (y-49-230*s)/38;
         int c = (x-450)/37;
         System.out.println();
-        System.out.println("sheet: "+s +"row: "+r +"col: "+c);
         Color c1 = new Color(buffer.getRGB(x,y));
         if(c1.equals(Color.ORANGE))
         {
             if(status == 0 || status == 1) {
-                if (status == X_TURN && board[s][r][c] != 'O' && board[s][r][c] != 'X')
+                if (status == X_TURN && board[s][r][c] != 'o' && board[s][r][c] != 'x')
                 {
-                    board[s][r][c] = 'X';
+                    board[s][r][c] = 'x';
                     changeStatus();
                 }
-                else if (status == O_TURN && board[s][r][c] != 'X' && board[s][r][c] != 'O')
+                else if (status == O_TURN && board[s][r][c] != 'x' && board[s][r][c] != 'o')
                 {
-                    board[s][r][c] = 'O';
+                    board[s][r][c] = 'o';
                     changeStatus();
                 }
-
             }
-
         }
-
-    repaint();
+        repaint();
     }
 
     @Override
