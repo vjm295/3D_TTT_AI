@@ -1,7 +1,5 @@
-public class Player implements PlayerInt
-{
+public class Player {
     private char letter;
-    private Location move;
     private String name;
 
     public Player(char letter, String name)
@@ -10,27 +8,22 @@ public class Player implements PlayerInt
         this.name = name;
     }
 
-    @Override
+
     public char getLetter() {
         return letter;
     }
 
-    @Override
-    public Location getMove(char[][][] board) {
-        return move;
+
+    public Location getMove() {
+        return null;
     }
 
-    public void setMove(Location move)
-    {
-        this.move = move;
-    }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
+
     public void reset() {
 
     }
