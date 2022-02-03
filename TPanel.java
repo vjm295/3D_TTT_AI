@@ -1,15 +1,16 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.Scanner;
 
-public class TPanel extends JPanel implements MouseListener, Runnable {
+public class TPanel extends JPanel implements MouseListener, Runnable, KeyListener {
 
     private BufferedImage buffer;
     private int updateCount;
-    private int waitTime=0;
     private char[][][] board = new char[4][4][4];
     private Player pX;
     private Player pO;
@@ -19,49 +20,84 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
     public static final int X_WON = 3;
     public static final int TIE = 4;
     private int status = 0;
+    private boolean ai = false;
+    private boolean oai = false;
+    private boolean xai = false;
+    private int waitTime;
+    int gameCount=0, games=0, xWins=0, oWins=0, ties=0;
+
 
     public TPanel() {
         super();
         System.out.println("---3D Tic Tac Toe Menu---");
         Scanner keyboard = new Scanner(System.in);
-        System.out.print("Will player X be an AI or a human? "); // no AI right now
-        String pXType = keyboard.nextLine();
-        if(pXType.equals("human") || pXType.equals("Human"))
+        
+        System.out.print("Will player x be an AI or a Human? (1 for AI, 2 for Human) "); // no AI right now
+        int pXType = keyboard.nextInt();
+        if(pXType==2)
         {
-            System.out.print("Enter your name for player X: ");
+            System.out.print("Enter your name for player x: ");
+            keyboard.nextLine();
             String pXName = keyboard.nextLine();
             pX = new Player('x', pXName);
         }
-        else if(pXType.equals("AI"))
+        else if(pXType==1)
         {
             System.out.println("Select an AI: ");
-            System.out.print("1. Random\n2. Straight Line\n3. Blocking\n4. Straight Line Blocking\n Enter: ");
+            System.out.print("1. Random\n2. Straight Line\n3. Blocking\n4. Straight Line Blocking\nEnter: ");
             int xAIType = keyboard.nextInt();
+            if(xAIType == 1)
+                pX = new RandomAI('x', "RandomX");
+            if(xAIType == 2)
+                pX = new StraightLineAI('x', "StraightLineX");
         }
-        // put it into AI class and stuff
-        System.out.print("Will player O be AI or Human? ");
-        String pOType = keyboard.nextLine();
-        if(pOType.equals("human") || pOType.equals("Human"))
+        System.out.print("Will player o be AI or Human? (1 for AI, 2 for Human) ");
+        int pOType = keyboard.nextInt();
+        if(pOType==2)
         {
-            System.out.print("Enter your name for player O: ");
+            System.out.print("Enter your name for player o: ");
+            keyboard.nextLine();
             String pOName = keyboard.nextLine();
             pO = new Player('o', pOName);
         }
-        else if(pOType.equals("AI"))
+        else if(pOType==1)
         {
             System.out.println("Select an AI: ");
-            System.out.print("1. Random\n2. Straight Line\n3. Blocking\n4. Straight Line Blocking\n Enter: ");
+            System.out.print("1. Random\n2. Straight Line\n3. Blocking\n4. Straight Line Blocking\nEnter: ");
             int oAIType = keyboard.nextInt();
+            if(oAIType == 1)
+                pO = new RandomAI('o', "RandomO");
+            if(oAIType == 2)
+                pO = new StraightLineAI('o', "StraightLineO");
         }
-        // put it into AI class and stuff
-        if(pOType.equals("AI") && pXType.equals("AI"))
+        if(pOType==1 && pXType==1)
         {
-            System.out.print("How many milliseconds do you want the AI to wait between moves? ");
-            int waitTime = keyboard.nextInt();
+            ai=true;
+            System.out.print("How many games would you like the AI to play? ");
+            gameCount = keyboard.nextInt();
+            System.out.print("Would you like to view the games or have them happen in the background? (1 for viewing, 2 for background) ");
+            int speed = keyboard.nextInt();
+            if(speed==2)
+                finish();
+            if(speed==1) {
+                System.out.print("How many milliseconds do you want between each AI move? ");
+                waitTime = keyboard.nextInt();
+            }
         }
+        if(pXType==1 && pOType ==2)
+            xai = true;
+        if(pXType==2 && pOType ==1)
+            oai = true;
         setSize(1000, 950);
         this.buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         addMouseListener(this);
+        addKeyListener(this);
+    }
+
+    public void reset()
+    {
+        board = new char[4][4][4];
+        status = X_TURN;
     }
 
     public void paint(Graphics g)
@@ -74,11 +110,11 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
         gc.setFont(f);
         gc.setColor(Color.WHITE);
         if(status == X_WON)
-            gc.drawString(pX.getName() + " has won the game!", 40, 40);
+            gc.drawString(pX.getName() + " has won the game!", 10, 40);
         else if(status == O_WON)
-            gc.drawString(pO.getName() + " has won the game!", 40, 40);
+            gc.drawString(pO.getName() + " has won the game!", 10, 40);
         else if(status == TIE)
-            gc.drawString("The game ended in a tie", 40, 40);
+            gc.drawString("The game ended in a tie", 10, 40);
         int xPosV = 450, yPosV = 50;
         int xPos = 450, yPos = 50; //recalculate values
         for(int a = 0; a < 4; a++)
@@ -109,34 +145,112 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
                     if(board[s][r][c] == 'X' || board[s][r][c] == 'x')
                     {
                         gc.setColor(Color.BLUE);
-                        gc.drawString("X",459+36*c,80+36*r + 230*s);
+                        gc.drawString("x",459+36*c,80+36*r + 230*s);
                     }
                     else if(board[s][r][c] == 'O' || board[s][r][c] == 'o')
                     {
                         gc.setColor(Color.RED);
-                        gc.drawString("O",459+36*c,80+36*r + 230*s);
+                        gc.drawString("o",459+36*c,80+36*r + 230*s);
                     }
                 }
             }
         }
         if(status == X_TURN)
         {
-            f = new Font(Font.SERIF,Font.BOLD,60);
+            f = new Font(Font.SERIF,Font.BOLD,40);
             gc.setFont(f);
             gc.setColor(new Color(0,204,255));
-            gc.drawString( pX.getName()+"'s Turn (X)",50,90);
+            gc.drawString( pX.getName()+"'s Turn (x)",50,90);
         }
         else if(status == O_TURN)
         {
-            f = new Font(Font.SERIF,Font.BOLD,60);
+            f = new Font(Font.SERIF,Font.BOLD,40);
             gc.setFont(f);
             gc.setColor(Color.RED);
-            gc.drawString( pO.getName()+"'s Turn (O)",50,90);
+            gc.drawString( pO.getName()+"'s Turn (o)",50,90);
         }
+        if(ai)
+            live();
+        if(xai && status == X_TURN)
+            aiTurn(pX, 'x');
+        if(oai && status == O_TURN)
+            aiTurn(pO, 'o');
         g.drawImage(buffer, 0, 0, null);
     }
 
-    public int won(char[][][] board, Player pX, Player pO)
+    public void aiTurn(Player p, char letter)
+    {
+        Location move = p.getMove(board);
+        board[move.getSheet()][move.getRow()][move.getCol()] = letter;
+        changeStatus();
+        repaint();
+    }
+
+    public void finish()
+    {
+        Location xMove;
+        Location oMove;
+        do {
+            do {
+                xMove = pX.getMove(board);
+                board[xMove.getSheet()][xMove.getRow()][xMove.getCol()] = 'x';
+                oMove = pO.getMove(board);
+                board[oMove.getSheet()][oMove.getRow()][oMove.getCol()] = 'o';
+                changeStatus();
+
+            } while (status == X_TURN || status == O_TURN);
+            if(status==X_WON)
+                xWins++;
+            else if(status==O_WON)
+                oWins++;
+            else if(status==TIE)
+                ties++;
+            games++;
+            reset();
+        }while(games<gameCount);
+        System.out.println(games + " games have been played and out of those\nX won " + xWins + " games\nO won " + oWins + " games\n" + ties + " games ended in ties");
+        System.exit(0);
+    }
+
+    public void live()
+    {
+        Location xMove;
+        Location oMove;
+        if(status==X_TURN)
+        {
+            xMove = pX.getMove(board);
+            board[xMove.getSheet()][xMove.getRow()][xMove.getCol()] = 'x';
+        }
+        if(status==O_TURN)
+        {
+            oMove = pO.getMove(board);
+            board[oMove.getSheet()][oMove.getRow()][oMove.getCol()] = 'o';
+        }
+        changeStatus();
+        if(status==X_WON)
+            xWins++;
+        else if(status==O_WON)
+            oWins++;
+        else if(status==TIE)
+            ties++;
+        if(status != X_TURN && status != O_TURN) {
+            games++;
+            reset();
+        }
+        if(games == gameCount)
+        {
+            System.out.println(games + " games have been played and out of those\nX won " + xWins + " games\nO won " + oWins + " games\n" + ties + " games ended in ties");
+            System.exit(0);
+        }
+        try {
+            Thread.sleep(waitTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        repaint();
+    }
+
+    public int won(char[][][] board)
     {
         for(int i=0; i < 4; i++) // for X
         {
@@ -241,101 +355,75 @@ public class TPanel extends JPanel implements MouseListener, Runnable {
         return 0;
     }
 
-    public void update()
-    {
-
-    }
-
     public void changeStatus()
     {
         if(status == X_TURN)
             status = O_TURN;
         else if(status == O_TURN)
             status = X_TURN;
-        if(won(board, pX, pO) == 1)
+        if(won(board) == 1)
             status = X_WON;
-        else if(won(board, pX, pO) == 2)
+        else if(won(board) == 2)
             status = O_WON;
-        else if(won(board, pX, pO) == -1)
+        else if(won(board) == -1)
             status = TIE;
     }
-
     @Override
-    public void run() {
-        int waitToUpdate = (1000/35);
-        long startTime = System.nanoTime();
-        while(true)
-        {
-            boolean shouldRepaint = false;
-            long currentTime = System.nanoTime();
-
-            long updatesNeeded = (((currentTime-startTime)/1000000))/waitToUpdate;
-            for(long x = updateCount; x<updatesNeeded; x++)
-            {
-                update();
-                shouldRepaint = true;
-                updateCount++;
-            }
-            if(shouldRepaint)
-                repaint();
-            try {
-                Thread.sleep(waitTime);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-
-             update();
-        }
-        /* Call update and paint the correct # of times per second */
-
-    }
-
+    public void run() {}
     @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
-
+    public void mouseClicked(MouseEvent e) {}
     @Override
     public void mousePressed(MouseEvent e) {
-        int x = e.getX(), y = e.getY();
-        int s = (y-75)/205;
-        int r = (y-49)/38;
-        if(s > 0)
-            r = (y-49-230*s)/38;
-        int c = (x-450)/37;
-        System.out.println();
-        Color c1 = new Color(buffer.getRGB(x,y));
-        if(c1.equals(Color.ORANGE))
+        if(!ai || (xai && status == O_TURN) || (oai && status == X_TURN))
         {
-            if(status == 0 || status == 1) {
-                if (status == X_TURN && board[s][r][c] != 'o' && board[s][r][c] != 'x')
-                {
-                    board[s][r][c] = 'x';
-                    changeStatus();
-                }
-                else if (status == O_TURN && board[s][r][c] != 'x' && board[s][r][c] != 'o')
-                {
-                    board[s][r][c] = 'o';
-                    changeStatus();
+            int x = e.getX(), y = e.getY();
+            int s = (y - 75) / 205;
+            int r = (y - 49) / 38;
+            if (s > 0)
+                r = (y - 49 - 230 * s) / 38;
+            int c = (x - 450) / 37;
+            Color c1 = new Color(buffer.getRGB(x, y));
+            if (c1.equals(Color.ORANGE)) {
+                if (status == 0 || status == 1) {
+                    if (status == X_TURN && board[s][r][c] != 'o' && board[s][r][c] != 'x') {
+                        board[s][r][c] = 'x';
+                        changeStatus();
+                    } else if (status == O_TURN && board[s][r][c] != 'x' && board[s][r][c] != 'o') {
+                        board[s][r][c] = 'o';
+                        changeStatus();
+                    }
                 }
             }
+            repaint();
         }
+    }
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+    @Override
+    public void mouseExited(MouseEvent e) {}
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        char c = e.getKeyChar();
+        if(c == 'r')
+            reset();
         repaint();
     }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
+    public void addNotify()
+    {
+        super.addNotify();
+        requestFocus();
     }
-
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
+    public void keyReleased(KeyEvent e) {
 
     }
 }
