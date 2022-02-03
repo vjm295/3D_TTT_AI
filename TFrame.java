@@ -30,8 +30,4 @@ public class TFrame extends JFrame {
 
         setVisible(true);
     }
-    public TPanel getP()
-    {
-        return p;
-    }
 }
