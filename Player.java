@@ -8,23 +8,15 @@ public class Player {
         this.name = name;
     }
 
-
     public char getLetter() {
         return letter;
     }
-
-
-    public Location getMove() {
-        return null;
-    }
-
 
     public String getName() {
         return name;
     }
 
-
-    public void reset() {
-
+    public Location getMove(char[][][] board) {
+        return null;
     }
 }
