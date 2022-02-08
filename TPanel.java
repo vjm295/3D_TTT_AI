@@ -24,7 +24,8 @@ public class TPanel extends JPanel implements MouseListener, Runnable, KeyListen
     private boolean oai = false;
     private boolean xai = false;
     private int waitTime;
-    int gameCount=0, games=0, xWins=0, oWins=0, ties=0;
+    private boolean done = false, end = false;
+    private int gameCount=0, games=0, xWins=0, oWins=0, ties=0;
 
 
     public TPanel() {
@@ -96,6 +97,11 @@ public class TPanel extends JPanel implements MouseListener, Runnable, KeyListen
 
     public void reset()
     {
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         board = new char[4][4][4];
         status = X_TURN;
     }
@@ -116,7 +122,7 @@ public class TPanel extends JPanel implements MouseListener, Runnable, KeyListen
         else if(status == TIE)
             gc.drawString("The game ended in a tie", 10, 40);
         int xPosV = 450, yPosV = 50;
-        int xPos = 450, yPos = 50; //recalculate values
+        int xPos = 450, yPos = 50;
         for(int a = 0; a < 4; a++)
         {
             gc.setColor(Color.ORANGE);
@@ -145,12 +151,12 @@ public class TPanel extends JPanel implements MouseListener, Runnable, KeyListen
                     if(board[s][r][c] == 'X' || board[s][r][c] == 'x')
                     {
                         gc.setColor(Color.BLUE);
-                        gc.drawString("x",459+36*c,80+36*r + 230*s);
+                        gc.drawString("X",459+36*c,80+36*r + 230*s);
                     }
                     else if(board[s][r][c] == 'O' || board[s][r][c] == 'o')
                     {
                         gc.setColor(Color.RED);
-                        gc.drawString("o",459+36*c,80+36*r + 230*s);
+                        gc.drawString("O",459+36*c,80+36*r + 230*s);
                     }
                 }
             }
@@ -169,6 +175,16 @@ public class TPanel extends JPanel implements MouseListener, Runnable, KeyListen
             gc.setColor(Color.RED);
             gc.drawString( pO.getName()+"'s Turn (o)",50,90);
         }
+        if(end)
+        {
+            reset();
+            System.exit(0);
+        }
+        if(done)
+        {
+            reset();
+            done = false;
+        }
         if(ai)
             live();
         if(xai && status == X_TURN)
@@ -176,6 +192,7 @@ public class TPanel extends JPanel implements MouseListener, Runnable, KeyListen
         if(oai && status == O_TURN)
             aiTurn(pO, 'o');
         g.drawImage(buffer, 0, 0, null);
+
     }
 
     public void aiTurn(Player p, char letter)
@@ -226,7 +243,7 @@ public class TPanel extends JPanel implements MouseListener, Runnable, KeyListen
             oMove = pO.getMove(board);
             board[oMove.getSheet()][oMove.getRow()][oMove.getCol()] = 'o';
         }
-        changeStatus();
+
         if(status==X_WON)
             xWins++;
         else if(status==O_WON)
@@ -235,12 +252,13 @@ public class TPanel extends JPanel implements MouseListener, Runnable, KeyListen
             ties++;
         if(status != X_TURN && status != O_TURN) {
             games++;
-            reset();
+            done=true;
         }
+        changeStatus();
         if(games == gameCount)
         {
             System.out.println(games + " games have been played and out of those\nX won " + xWins + " games\nO won " + oWins + " games\n" + ties + " games ended in ties");
-            System.exit(0);
+            end = true;
         }
         try {
             Thread.sleep(waitTime);
@@ -422,6 +440,7 @@ public class TPanel extends JPanel implements MouseListener, Runnable, KeyListen
         super.addNotify();
         requestFocus();
     }
+
     @Override
     public void keyReleased(KeyEvent e) {
 
