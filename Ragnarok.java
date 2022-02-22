@@ -19,11 +19,32 @@ public class Ragnarok extends Player implements PlayerInt
 
     @Override
     public Location getMove(char[][][] board) {
-        Location move;
-        System.out.println(grader(board));
-        do {
-            move = new Location((int) (Math.random() * 4), (int) (Math.random() * 4), (int) (Math.random() * 4));
-        } while(board[move.getSheet()][move.getRow()][move.getCol()] == 'x' || board[move.getSheet()][move.getRow()][move.getCol()] == 'o');
+            Location move;
+        char[][][] cube = new char[4][4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 4; k++) {
+                    cube[i][j][k] = board[i][j][k];
+                    if(cube[i][j][k] != 'x' && cube[i][j][k] != 'o')
+                        cube[i][j][k] = '-';
+                }
+            }
+        }
+        int index=0;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 4; k++) {
+                    if(board[i][j][k] != 'x' && board[i][j][k] != 'o')
+                    {
+                        grader(cube, new Location(k, j, i));
+                    }
+                }
+            }
+        }
+
+        move = moves.get(moves.size()-1).getData();
+
+        System.out.println(move);
         return move;
     }
 
