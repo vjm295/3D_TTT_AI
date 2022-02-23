@@ -24,7 +24,13 @@ public class Ragnarok extends Player implements PlayerInt
         Location move;
         
         //int index=0;
-        int points=0, a=0, b=0, c=0;
+        int points=-10000000, a, b, c;
+        do
+        {
+            a = (int)(Math.random()*4);
+            b = (int)(Math.random()*4);
+            c = (int)(Math.random()*4);
+        } while(board[a][b][c] == 'x' && board[a][b][c] == 'o');
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 for (int k = 0; k < 4; k++) {
@@ -48,11 +54,69 @@ public class Ragnarok extends Player implements PlayerInt
                 }
             }
         }
+        Location blocked = blocked(board);
+        if(blocked.getSheet() != -1)
+        {
+            a = blocked.getSheet();
+            b = blocked.getRow();
+            c = blocked.getCol();
+        }
         move = new Location(c, b, a);
 
         System.out.println(move);
         return move;
     }
+
+    /*public Location blocked(char[][][] board)
+    {
+        if()
+        {
+            int hc, vc, tbdc=0, btdc=0, sc, svc=0, svc2=0, shc=0, shc2=0, tbdsc=0, tbdsc2=0, btdsc=0, btdsc2=0;
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    hc=0; vc=0; tbdc=0; btdc=0; sc=0; svc=0; svc2=0; shc=0; shc2=0; tbdsc=0; tbdsc2=0; btdsc=0; btdsc2=0;
+
+                    for(int x = 0, y = 3; x < 4 && y >= 0; x++, y--)
+                    {
+                        if(board[i][j][x] == letter) // row check
+                            hc++;
+                        if(board[i][x][j] == letter) // col check
+                            vc++;
+                        if(board[i][x][x] == letter) // top to bottom diagonal check
+                            tbdc++;
+                        if(board[i][x][y] == letter) // bottom to top diagonal check
+                            btdc++;
+                        if(board[x][i][j] == letter) // sheet check
+                            sc++;
+                        if(board[x][x][i] == letter) // sheet col check
+                            svc++;
+                        if(board[x][y][i] == letter) // sheet col check from last sheet (new)
+                            svc2++;
+                        if(board[x][i][x] == letter) // sheet row check
+                            shc++;
+                        if(board[x][i][y] == letter) // sheet row check from last sheet (new)
+                            shc2++;
+                        if(board[x][x][x] == letter) // top to bottom diagonal sheet check (left to right)
+                            tbdsc++;
+                        if(board[x][y][x] == letter) // bottom to top diagonal sheet check (left to right) (new)
+                            btdsc++;
+                        if(board[x][x][y] == letter) // top to bottom diagonal sheet check (right to left)
+                            tbdsc2++;
+                        if(board[x][y][y] == letter) // bottom to top diagonal sheet check (right to left) (new)
+                            btdsc2++;
+                    }
+                    
+                }
+                
+            }
+        }
+            return null;
+        else
+            return new Location(-1, -1, -1);
+
+    }*/
 
     public void grader(char[][][] board, Location move)
     {
@@ -61,7 +125,7 @@ public class Ragnarok extends Player implements PlayerInt
         if(letter == 'o')
             enemy = 'x';
         board[move.getSheet()][move.getRow()][move.getCol()] = letter;
-        int hc=0, vc=0, tbdc=0, btdc=0, sc=0, svc=0, svc2=0, shc=0, shc2=0, tbdsc=0, tbdsc2=0, btdsc=0, btdsc2=0;
+        int hc, vc, tbdc=0, btdc=0, sc, svc=0, svc2=0, shc=0, shc2=0, tbdsc=0, tbdsc2=0, btdsc=0, btdsc2=0;
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -138,7 +202,9 @@ public class Ragnarok extends Player implements PlayerInt
                     if(board[x][y][y] == enemy) // bottom to top diagonal sheet check (right to left) (new)
                         btdsc2++;
                 }
-                points -= Math.pow(hc, 5) + Math.pow(vc, 5) +  Math.pow(sc, 5);
+                if(hc == 1 || vc == 1 || sc == 1)
+                    points -= Math.pow(hc, 5) + Math.pow(vc, 5) +  Math.pow(sc, 5);
+                else if(hc > 1 || vc > 1 || sc > 1)
             }
             points -= Math.pow(tbdc, 5) + Math.pow(btdc, 5) + Math.pow(svc, 5) + Math.pow(svc2, 5) + Math.pow(shc, 5) + Math.pow(shc2, 5);
         }
