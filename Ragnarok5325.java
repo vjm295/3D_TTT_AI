@@ -1,14 +1,16 @@
-public class Ragnarok implements PlayerInt
+public class Ragnarok5325 implements PlayerInt
 {
     private char letter;
     private String name;
     int[][][] cube = new int[4][4][4];
-    private char enemy = 'o';
+    private char enemy;
+    boolean first = true;
 
-    public Ragnarok(char letter, String name)
+    public Ragnarok5325(char letter, String name)
     {
         this.letter = letter;
         this.name = name;
+        enemy = 'o';
         if(letter == 'o')
             enemy = 'x';
     }
@@ -21,15 +23,23 @@ public class Ragnarok implements PlayerInt
     @Override
     public Location getMove(char[][][] board) {
         Location move;
-
-        //int index=0;
-        int points=-10000000, a, b, c;
+        int points=-1000, a, b, c;
         do
         {
             a = (int)(Math.random()*4);
             b = (int)(Math.random()*4);
             c = (int)(Math.random()*4);
         } while(board[a][b][c] == 'x' || board[a][b][c] == 'o');
+        if(board[1][1][1] != 'x' && first)
+        {
+            first = false;
+            return move = new Location(1, 1, 1);
+        }
+        else if(first)
+        {
+            first = false;
+            return move = new Location(2, 2, 2);
+        }
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 for (int k = 0; k < 4; k++) {
@@ -145,8 +155,8 @@ public class Ragnarok implements PlayerInt
                     points -= Math.pow(3, 5);
 
                 // stops double 3's
-               // if(ehc == 2 && evc == 2 && ((hc==1 && vc==0) || (vc==1 && hc==0)))
-               //     points += Math.pow(3.4, 5);
+                if(ehc == 2 && evc == 2 && ((hc==1 && vc==0) || (vc==1 && hc==0)))
+                    points += Math.pow(3.4, 5);
             }
             points += Math.pow(tbdc, 5) + Math.pow(btdc, 5) + Math.pow(svc, 5) + Math.pow(svc2, 5) + Math.pow(shc, 5) + Math.pow(shc2, 5);
 
@@ -211,5 +221,6 @@ public class Ragnarok implements PlayerInt
 
     @Override
     public void refresh() {
+        first=true;
     }
 }
