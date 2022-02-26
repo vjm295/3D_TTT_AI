@@ -30,7 +30,7 @@ public class Ragnarok extends Player implements PlayerInt
             a = (int)(Math.random()*4);
             b = (int)(Math.random()*4);
             c = (int)(Math.random()*4);
-        } while(board[a][b][c] == 'x' && board[a][b][c] == 'o');
+        } while(board[a][b][c] == 'x' || board[a][b][c] == 'o');
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 for (int k = 0; k < 4; k++) {
@@ -130,11 +130,11 @@ public class Ragnarok extends Player implements PlayerInt
                 points += Math.pow(hc, 5) + Math.pow(vc, 5) + Math.pow(sc, 5);
 
                 // blocking enemy
-                if(ehc > 1 && hc == 1)
+                if(ehc == 3 && hc == 1)
                     points += Math.pow(3.5, 5);
-                if(evc > 1 && vc == 1)
+                if(evc == 3 && vc == 1)
                     points += Math.pow(3.5, 5);
-                if(esc > 1 && sc == 1)
+                if(esc == 3 && sc == 1)
                     points += Math.pow(3.5, 5);
 
                 // blocked by enemy
@@ -146,22 +146,22 @@ public class Ragnarok extends Player implements PlayerInt
                     points -= Math.pow(3, 5);
 
                 // stops double 3's
-                //  if(ehc == 2 && evc == 2 && ((hc==1 && vc==0) || (vc==1 && hc==0)))
-                //      points += Math.pow(3.4, 5);
+               // if(ehc == 2 && evc == 2 && ((hc==1 && vc==0) || (vc==1 && hc==0)))
+               //     points += Math.pow(3.4, 5);
             }
             points += Math.pow(tbdc, 5) + Math.pow(btdc, 5) + Math.pow(svc, 5) + Math.pow(svc2, 5) + Math.pow(shc, 5) + Math.pow(shc2, 5);
 
-            if(etbdc > 1 && tbdc == 1)
+            if(etbdc == 3 && tbdc == 1)
                 points += Math.pow(3.5, 5);
-            if(ebtdc > 1 && btdc == 1)
+            if(ebtdc == 3 && btdc == 1)
                 points += Math.pow(3.5, 5);
-            if(esvc > 1 && svc == 1)
+            if(esvc == 3 && svc == 1)
                 points += Math.pow(3.5, 5);
-            if(esvc2 > 1 && svc2 == 1)
+            if(esvc2 == 3 && svc2 == 1)
                 points += Math.pow(3.5, 5);
-            if(eshc > 1 && shc == 1)
+            if(eshc == 3 && shc == 1)
                 points += Math.pow(3.5, 5);
-            if(eshc2 > 1 && shc2 == 1)
+            if(eshc2 == 3 && shc2 == 1)
                 points += Math.pow(3.5, 5);
 
             if(etbdc == 1 && tbdc == 3)
@@ -182,13 +182,13 @@ public class Ragnarok extends Player implements PlayerInt
         }
         points += Math.pow(tbdsc, 5) + Math.pow(btdsc, 5) + Math.pow(tbdsc2, 5) + Math.pow(btdsc2, 5);
 
-        if(etbdsc > 1 && tbdsc == 1)
+        if(etbdsc == 3 && tbdsc == 1)
             points += Math.pow(3.5, 5);
-        if(ebtdsc > 1 && btdsc == 1)
+        if(ebtdsc == 3 && btdsc == 1)
             points += Math.pow(3.5, 5);
-        if(etbdsc2 > 1 && tbdsc2 == 1)
+        if(etbdsc2 == 3 && tbdsc2 == 1)
             points += Math.pow(3.5, 5);
-        if(ebtdsc2 > 1 && btdsc2 == 1)
+        if(ebtdsc2 == 3 && btdsc2 == 1)
             points += Math.pow(3.5, 5);
 
         if(etbdsc == 1 && tbdsc == 3)
