@@ -4,7 +4,7 @@ public class Ragnarok2 extends Player implements PlayerInt
     private String name;
     int[][][] cube = new int[4][4][4];
     private char enemy = 'o';
-    private NSPQ<Location> possibleMoves= new NSPQ<>();
+    private NSPQ<Location> possibleMoves = new NSPQ<>();
     private R2Helper helperAI;
     boolean first = true;
     int movesPlayed = 1;
@@ -137,7 +137,7 @@ public char[][][] iterate(char[][][] board1, int index)
     Location nextMoveDepth = getNextMove(board1);
     System.out.println("original priority is: "+possibleMoves.get(index).getPriority());
     System.out.println("recurse grader is: "+recurseGrader(board1,nextMoveDepth));
-    possibleMoves.get(index).setPriority((possibleMoves.get(index).getPriority()/20)+(recurseGrader(board1,nextMoveDepth)/5));  //67%: divide 25, multiply 5, depth 4, pow 4, 5 top moves
+    possibleMoves.get(index).setPriority((possibleMoves.get(index).getPriority()/25)+(recurseGrader(board1,nextMoveDepth)/5));  //67%: divide 25, multiply 5, depth 4, pow 4, 5 top moves
     board1[nextMoveDepth.sheet][nextMoveDepth.row][nextMoveDepth.col] = letter;
     return board1;
 }
@@ -263,22 +263,22 @@ public char[][][] iterate(char[][][] board1, int index)
         points += Math.pow(tbdsc, 4) + Math.pow(btdsc, 4) + Math.pow(tbdsc2, 4) + Math.pow(btdsc2, 4);
 
         if(etbdsc == 3 && tbdsc == 1)
-            points += Math.pow(3.5, 7);
+            points += Math.pow(3.5, 4);
         if(ebtdsc == 3 && btdsc == 1)
-            points += Math.pow(3.5, 7);
+            points += Math.pow(3.5, 4);
         if(etbdsc2 == 3 && tbdsc2 == 1)
-            points += Math.pow(3.5, 7);
+            points += Math.pow(3.5, 4);
         if(ebtdsc2 == 3 && btdsc2 == 1)
-            points += Math.pow(3.5, 7);
+            points += Math.pow(3.5, 4);
 
         if(etbdsc == 1 && tbdsc == 3)
-            points -= Math.pow(3, 7);
+            points -= Math.pow(3, 4);
         if(ebtdsc == 1 && btdsc == 3)
-            points -= Math.pow(3, 7);
+            points -= Math.pow(3, 4);
         if(etbdsc2 == 1 && tbdsc2 == 3)
-            points -= Math.pow(3, 7);
+            points -= Math.pow(3, 4);
         if(ebtdsc2 == 1 && btdsc2 == 3)
-            points -= Math.pow(3, 7);
+            points -= Math.pow(3, 4);
 
         board[move.getSheet()][move.getRow()][move.getCol()] = '-';
 
@@ -355,11 +355,11 @@ public char[][][] iterate(char[][][] board1, int index)
 
                 // blocking enemy
                 if(ehc == 3 && hc == 1)
-                    points += Math.pow(3.5, 6);
+                    points += Math.pow(3.5, 4);
                 if(evc == 3 && vc == 1)
-                    points += Math.pow(3.5, 6);
+                    points += Math.pow(3.5, 4);
                 if(esc == 3 && sc == 1)
-                    points += Math.pow(3.5, 6);
+                    points += Math.pow(3.5, 4);
 
                 // blocked by enemy
                 if(ehc == 1 && hc == 3)
@@ -371,35 +371,35 @@ public char[][][] iterate(char[][][] board1, int index)
 
                 // stops double 3's
                 if(ehc == 2 && evc == 2 && ((hc==1 && vc==0) || (vc==1 && hc==0)))
-                    points += Math.pow(3.4, 6);
+                    points += Math.pow(3.4, 4);
             }
             points += Math.pow(tbdc, 4) + Math.pow(btdc, 4) + Math.pow(svc, 4) + Math.pow(svc2, 4) + Math.pow(shc, 4) + Math.pow(shc2, 4);
 
             if(etbdc == 3 && tbdc == 1)
-                points += Math.pow(3.5, 7);
+                points += Math.pow(3.5, 4);
             if(ebtdc == 3 && btdc == 1)
-                points += Math.pow(3.5, 7);
+                points += Math.pow(3.5, 4);
             if(esvc == 3 && svc == 1)
-                points += Math.pow(3.5, 7);
+                points += Math.pow(3.5, 4);
             if(esvc2 == 3 && svc2 == 1)
-                points += Math.pow(3.5, 7);
+                points += Math.pow(3.5, 4);
             if(eshc == 3 && shc == 1)
-                points += Math.pow(3.5, 7);
+                points += Math.pow(3.5, 4);
             if(eshc2 == 3 && shc2 == 1)
-                points += Math.pow(3.5, 7);
+                points += Math.pow(3.5, 4);
 
             if(etbdc == 1 && tbdc == 3)
-                points -= Math.pow(3, 7);
+                points -= Math.pow(3, 4);
             if(ebtdc == 1 && btdc == 3)
-                points -= Math.pow(3, 7);
+                points -= Math.pow(3, 4);
             if(esvc == 1 && svc == 3)
-                points -= Math.pow(3, 7);
+                points -= Math.pow(3, 4);
             if(esvc2 == 1 && svc2 == 3)
-                points -= Math.pow(3, 7);
+                points -= Math.pow(3, 4);
             if(eshc == 1 && shc == 3)
-                points -= Math.pow(3, 7);
+                points -= Math.pow(3, 4);
             if(eshc2 == 1 && shc2 == 3)
-                points -= Math.pow(3, 7);
+                points -= Math.pow(3, 4);
 
             //if(((etbdc == 1 && ebtdc == 2) || (etbdc == 2 && ebtdc == 1)) && ((tbdc==1 && btdc==0) || (btdc==1 && tbdc==0)))
             //    points += Math.pow(3.4, 4);
@@ -407,22 +407,22 @@ public char[][][] iterate(char[][][] board1, int index)
         points += Math.pow(tbdsc, 4) + Math.pow(btdsc, 4) + Math.pow(tbdsc2, 4) + Math.pow(btdsc2, 4);
 
         if(etbdsc == 3 && tbdsc == 1)
-            points += Math.pow(3.5, 7);
+            points += Math.pow(3.5, 4);
         if(ebtdsc == 3 && btdsc == 1)
-            points += Math.pow(3.5, 7);
+            points += Math.pow(3.5, 4);
         if(etbdsc2 == 3 && tbdsc2 == 1)
-            points += Math.pow(3.5, 7);
+            points += Math.pow(3.5, 4);
         if(ebtdsc2 == 3 && btdsc2 == 1)
-            points += Math.pow(3.5, 7);
+            points += Math.pow(3.5, 4);
 
         if(etbdsc == 1 && tbdsc == 3)
-            points -= Math.pow(3, 7);
+            points -= Math.pow(3, 4);
         if(ebtdsc == 1 && btdsc == 3)
-            points -= Math.pow(3, 7);
+            points -= Math.pow(3, 4);
         if(etbdsc2 == 1 && tbdsc2 == 3)
-            points -= Math.pow(3, 7);
+            points -= Math.pow(3, 4);
         if(ebtdsc2 == 1 && btdsc2 == 3)
-            points -= Math.pow(3, 7);
+            points -= Math.pow(3, 4);
 
         board[move.getSheet()][move.getRow()][move.getCol()] = '-';
 
