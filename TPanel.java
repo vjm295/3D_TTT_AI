@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import java.util.Scanner;
 
 public class TPanel extends JPanel implements MouseListener, Runnable, KeyListener {
-
+ 
     private BufferedImage buffer;
     private int updateCount;
     private char[][][] board = new char[4][4][4];
