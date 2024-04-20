@@ -14,7 +14,7 @@ public class Ragnarok extends Player implements PlayerInt
         if(letter == 'o')
             enemy = 'x';
     }
-
+ 
     @Override
     public char getLetter() {
         return letter;
