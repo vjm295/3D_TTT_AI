@@ -8,7 +8,7 @@ public class Ragnarok2 extends Player implements PlayerInt
     private R2Helper helperAI;
     boolean first = true;
     int movesPlayed = 1;
-
+ 
     public Ragnarok2(char letter, String name)
     {
         super(letter, name);
