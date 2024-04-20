@@ -6,7 +6,7 @@ public class NSPQ<E> extends PriorityQueue<PriorityNode> {
     }
 
 @Override
-    public PriorityNode poll() {
+     public PriorityNode poll() {
 
         if(list.size() == 0)
         {
