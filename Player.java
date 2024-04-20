@@ -1,4 +1,4 @@
-public class Player {
+ public class Player {
     private char letter;
     private String name;
 
