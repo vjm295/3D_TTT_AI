@@ -9,7 +9,7 @@ public class RandomAI extends Player implements PlayerInt
         this.letter = letter;
         this.name = name;
     }
-
+ 
     @Override
     public char getLetter() {
         return letter;
