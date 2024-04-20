@@ -19,7 +19,7 @@ public class R2Sub extends Player implements PlayerInt
     public char getLetter() {
         return letter;
     }
-
+ 
     @Override
     public Location getMove(char[][][] board) {
         Location move;
