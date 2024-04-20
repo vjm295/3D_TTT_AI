@@ -9,7 +9,7 @@ public class StraightLineAI extends Player implements PlayerInt {
     public StraightLineAI(char letter, String name) {
         super(letter,name);
     }
-
+ 
     public void changeValues(char[][][] board)
     {
         s = (int)(Math.random()*4);
