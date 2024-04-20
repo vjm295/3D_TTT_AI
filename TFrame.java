@@ -11,7 +11,7 @@ public class TFrame extends JFrame {
         setResizable(false); //sets user unable to resize item
 
         pack(); //creates frame (hidden at this point)
-
+ 
         p = new TPanel(); //creates panel
 
         Insets insets = getInsets(); //gets insets
