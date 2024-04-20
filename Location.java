@@ -3,7 +3,7 @@ public class Location
     int sheet;
     int row;
     int col;
-    
+     
     /** Sets x, y, z to the recieved values */
     public Location(int col,int row,int sheet)
     {
