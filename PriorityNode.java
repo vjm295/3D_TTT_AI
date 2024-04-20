@@ -8,7 +8,7 @@ public class PriorityNode<E> implements Comparable
         this.data 		= data;
         this.priority 	= priority;
     }
-
+ 
     public E getData()
     { return data; }
 
