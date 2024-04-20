@@ -8,7 +8,7 @@ public class R2Helper extends Player implements PlayerInt
     private R2Sub helperAI;
     boolean first = true;
     int movesPlayed = 1;
-
+ 
     public R2Helper(char letter, String name)
     {
         super(letter, name);
