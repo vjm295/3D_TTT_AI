@@ -14,7 +14,7 @@ public class Ragnarok5325 implements PlayerInt
         if(letter == 'o')
             enemy = 'x';
     }
-
+ 
     @Override
     public char getLetter() {
         return letter;
