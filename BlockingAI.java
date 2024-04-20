@@ -6,7 +6,7 @@ public class BlockingAI extends Player implements PlayerInt {
     private String temp;
     public BlockingAI(char letter, String name) {
         super(letter, name);
-
+ 
             this.anchor = new Location((int)(Math.random()*4),(int)(Math.random()*4),(int)(Math.random()*4));
     }
 
